@@ -9,7 +9,7 @@ initSentry();
 
 const server = app.listen(env.PORT, () => {
   logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-  logger.info(`API docs available at http://localhost:${env.PORT}/api-docs`);
+  // logger.info(`API docs available at http://localhost:${env.PORT}/api-docs`);
 });
 
 // ── Graceful shutdown ────────────────────────────

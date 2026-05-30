@@ -7,7 +7,7 @@ import pinoHttp from 'pino-http';
 import swaggerUi from 'swagger-ui-express';
 import sanitizeHtml from 'sanitize-html';
 
-import { logger, swaggerSpec, env } from '@/config';
+import { logger, env } from '@/config';
 import router from '@/routes';
 import { errorHandler, notFound, requestId, rateLimiter } from '@/middlewares';
 
@@ -38,9 +38,9 @@ app.use(requestId);
 app.use(rateLimiter);
 
 // ── API Docs ────────────────────────────────────
-if (!env.isProduction) {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-}
+// if (!env.isProduction) {
+//   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// }
 
 // ── Routes ──────────────────────────────────────
 app.use('/api', router);

@@ -2,7 +2,9 @@ import { cleanEnv, str, port, num } from 'envalid';
 
 const env = cleanEnv(process.env, {
   NODE_ENV: str({ choices: ['development', 'production', 'test'] }),
-  PORT: port({ default: 3000 }),
+  PORT: port({ default: 8080 }),
+
+  DATABASE_URL: str(),
 
   JWT_SECRET: str(),
 

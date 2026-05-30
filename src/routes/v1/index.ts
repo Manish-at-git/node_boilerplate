@@ -1,13 +1,9 @@
 import { Router } from 'express';
 
-// import authRoutes from '@/modules/auth/auth.routes';  // uncomment when ready
+import { authRoutes } from '@/modules/auth';
 
 const v1Router = Router();
 
-v1Router.get('/health', (_req, res) => {
-  res.json({ success: true, message: 'OK' });
-});
-
-// v1Router.use('/auth', authRoutes);  // uncomment when ready
+v1Router.use('/auth', authRoutes);
 
 export default v1Router;
