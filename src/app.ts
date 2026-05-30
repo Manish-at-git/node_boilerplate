@@ -5,7 +5,7 @@ import cors from 'cors';
 import compression from 'compression';
 import pinoHttp from 'pino-http';
 
-import { logger, env } from '@/config';
+import { env, httpLogger, logger } from '@/config';
 import router from '@/routes';
 import { errorHandler, notFound, requestId, rateLimiter } from '@/middlewares';
 

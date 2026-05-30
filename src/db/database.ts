@@ -1,9 +1,11 @@
-import { QueryResult, QueryResultRow } from 'pg';
+import { QueryResult, QueryResultRow, PoolClient } from 'pg';
+
 import pool from '@/db';
-import { PoolClient } from 'pg';
 
-
-export interface QueryData { text: string; values: unknown[];}
+export interface QueryData {
+  text: string;
+  values: unknown[];
+}
 
 export const buildQuery = (
   sql: string,
@@ -11,22 +13,18 @@ export const buildQuery = (
 ): QueryData => {
   const values: unknown[] = [];
 
-  const text = sql.replace(
-    /:([a-zA-Z0-9_]+)/g,
-    (_match: string, key: string) => {
-      if (!(key in params)) {
-        throw new Error(`Missing query parameter: ${key}`);
-      }
+  const text = sql.replace(/:([a-zA-Z0-9_]+)/g, (_match: string, key: string) => {
+    if (!(key in params)) {
+      throw new Error(`Missing query parameter: ${key}`);
+    }
 
-      values.push(params[key]);
+    values.push(params[key]);
 
-      return `$${values.length}`;
-    },
-  );
+    return `$${values.length}`;
+  });
 
   return { text, values };
 };
-
 
 export const query = async <T extends QueryResultRow>(
   sql: string,
@@ -35,10 +33,7 @@ export const query = async <T extends QueryResultRow>(
   const start = Date.now();
 
   try {
-    const result = await pool.query<T>(
-      sql,
-      params,
-    );
+    const result = await pool.query<T>(sql, params);
 
     const duration = Date.now() - start;
 
@@ -58,10 +53,7 @@ export const queryOne = async <T extends QueryResultRow>(
   sql: string,
   params: unknown[] = [],
 ): Promise<T | null> => {
-  const rows = await query<T>(
-    sql,
-    params,
-  );
+  const rows = await query<T>(sql, params);
 
   return rows[0] ?? null;
 };
@@ -69,9 +61,7 @@ export const queryOne = async <T extends QueryResultRow>(
 export const execute = async (
   sql: string,
   params: unknown[] = [],
-): Promise<QueryResult> => {
-  return pool.query(sql, params);
-};
+): Promise<QueryResult> => pool.query(sql, params);
 
 export const transaction = async <T>(
   callback: (client: PoolClient) => Promise<T>,
@@ -88,6 +78,7 @@ export const transaction = async <T>(
     return result;
   } catch (error) {
     await client.query('ROLLBACK');
+
     throw error;
   } finally {
     client.release();

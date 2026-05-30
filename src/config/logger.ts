@@ -1,8 +1,9 @@
 import pino from 'pino';
 
 import env from './env';
+import { pinoHttp } from 'pino-http';
 
-const logger = pino({
+export const logger = pino({
   level: env.LOG_LEVEL,
   ...(env.isDevelopment && {
     transport: {
@@ -16,4 +17,22 @@ const logger = pino({
   }),
 });
 
-export default logger;
+
+export const httpLogger = pinoHttp({
+  logger,
+
+  customProps: (req, res) => ({
+    request: {
+      method: req.method,
+      url: req.url,
+    },
+    response: {
+      statusCode: res.statusCode,
+    },
+  }),
+
+  serializers: {
+    req: () => undefined,
+    res: () => undefined,
+  },
+});

@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
-import { execute } from '@/db/database';
+import { buildQuery, execute } from '@/db/database';
+import { logger } from '@/config';
 
 const health = ( _req: Request, res: Response ): void => {
   res.json({ success: true, message: 'OK' });
@@ -7,9 +8,10 @@ const health = ( _req: Request, res: Response ): void => {
 
 const dbHealth = async ( _req: Request, res: Response ): Promise<void> => {
   try {
-    await execute('SELECT 1');
+    const { text, values } = buildQuery(`SELECTwid, created_at FROM demo_table LIMIT :limit`, { limit: 1 })
+    await execute(text, values);
     res.json({ success: true, message: 'DB connection OK' });
-  } catch {
+  } catch (error) {
     res.status(500).json({ success: false, message: 'DB connection failed' });
   }
 };

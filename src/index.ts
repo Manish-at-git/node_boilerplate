@@ -7,8 +7,10 @@ import { env, logger, initSentry } from './config';
 // Init Sentry before anything else
 initSentry();
 
+console.log('Starting server...', process.pid);
+
 const server = app.listen(env.PORT, () => {
-  logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+  logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode with process id ${process.pid}`);
   // logger.info(`API docs available at http://localhost:${env.PORT}/api-docs`);
 });
 
