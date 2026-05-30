@@ -4,8 +4,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import pinoHttp from 'pino-http';
-import swaggerUi from 'swagger-ui-express';
-import sanitizeHtml from 'sanitize-html';
 
 import { logger, env } from '@/config';
 import router from '@/routes';
@@ -23,12 +21,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
 // ── Sanitize request body ───────────────────────
-app.use((req, _res, next) => {
-  if (req.body) {
-    req.body = JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
-  }
-  next();
-});
+// app.use((req, _res, next) => {
+//   if (req.body) {
+//     req.body = JSON.parse(sanitizeHtml(JSON.stringify(req.body)));
+//   }
+//   next();
+// });
 
 // ── Logging & request ID ────────────────────────
 app.use(pinoHttp({ logger }));
