@@ -11,10 +11,9 @@ console.log('Starting server...', process.pid);
 
 const server = app.listen(env.PORT, () => {
   logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode with process id ${process.pid}`);
-  // logger.info(`API docs available at http://localhost:${env.PORT}/api-docs`);
+  logger.info(`API docs available at http://localhost:${env.PORT}/api-docs`);
 });
 
-// ── Graceful shutdown ────────────────────────────
 const shutdown = (signal: string) => {
   logger.info(`${signal} received — shutting down gracefully`);
 
@@ -52,10 +51,10 @@ process.on('SIGUSR2', () => {
   process.exit(0);
 });
 
-['SIGUSR2', 'SIGTERM', 'SIGINT', 'SIGHUP'].forEach((signal) => {
-  process.on(signal as NodeJS.Signals, () => {
-    console.log(`RECEIVED ${signal}`, process.pid);
-  });
-});
+// ['SIGUSR2', 'SIGTERM', 'SIGINT', 'SIGHUP'].forEach((signal) => {
+//   process.on(signal as NodeJS.Signals, () => {
+//     console.log(`RECEIVED ${signal}`, process.pid);
+//   });
+// });
 
 export default server;

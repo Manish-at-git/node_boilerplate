@@ -11,10 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 
 configureMiddleware(app);
 
-
 app.use("/api", router);
 
-// ── 404 & Error handlers ────────────────────────
 app.use(notFound);
 app.use(errorHandler);
 

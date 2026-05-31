@@ -1,14 +1,14 @@
-import * as Sentry from '@sentry/node';
+import * as Sentry from "@sentry/node";
 
-import env from './env';
+import env from "./env";
 
 const initSentry = (): void => {
-  if (!env.SENTRY_DSN) return;
+    if (!env.SENTRY_DSN) return;
 
-  Sentry.init({
-    dsn: env.SENTRY_DSN,
-    environment: env.NODE_ENV,
-  });
+    Sentry.init({
+        dsn: env.SENTRY_DSN,
+        environment: env.NODE_ENV,
+    });
 };
 
 export default initSentry;
