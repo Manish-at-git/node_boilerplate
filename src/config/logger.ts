@@ -1,7 +1,6 @@
 import pino from 'pino';
-
+import { Request, Response, NextFunction } from 'express';
 import env from './env';
-import { pinoHttp } from 'pino-http';
 
 export const logger = pino({
   level: env.LOG_LEVEL,
@@ -18,21 +17,31 @@ export const logger = pino({
 });
 
 
-export const httpLogger = pinoHttp({
-  logger,
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
+  const start = Date.now();
 
-  customProps: (req, res) => ({
-    request: {
+  res.on('finish', () => {
+    const log = {
       method: req.method,
-      url: req.url,
-    },
-    response: {
+      path: req.originalUrl,
       statusCode: res.statusCode,
-    },
-  }),
+      responseTime: Date.now() - start,
+    };
 
-  serializers: {
-    req: () => undefined,
-    res: () => undefined,
-  },
-});
+    const logLine = `method=${log.method} url=${log.path} status=${log.statusCode} durationMs=${log.responseTime}`;
+    
+    if (res.statusCode >= 500) {
+      logger.error(logLine);
+    } else if (res.statusCode >= 400) {
+      logger.warn(logLine);
+    } else {
+      logger.info(logLine);
+    }
+  });
+
+  next();
+};

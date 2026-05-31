@@ -19,13 +19,13 @@ const generateTokens = (
 ): IAuthTokens => {
   const accessToken = jwt.sign(
     payload,
-    env.JWT_SECRET,
+    env.JWT_ACCESS_SECRET,
     { expiresIn: '30m' },
   );
 
   const refreshToken = jwt.sign(
     payload,
-    env.JWT_SECRET,
+    env.JWT_ACCESS_SECRET,
     { expiresIn: '30d' },
   );
 

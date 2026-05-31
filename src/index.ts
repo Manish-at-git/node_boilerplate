@@ -43,4 +43,19 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
+process.on('exit', (code) => {
+  console.log('Process exiting', process.pid, code);
+});
+
+process.on('SIGUSR2', () => {
+  console.log('SIGUSR2', process.pid);
+  process.exit(0);
+});
+
+['SIGUSR2', 'SIGTERM', 'SIGINT', 'SIGHUP'].forEach((signal) => {
+  process.on(signal as NodeJS.Signals, () => {
+    console.log(`RECEIVED ${signal}`, process.pid);
+  });
+});
+
 export default server;

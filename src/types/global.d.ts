@@ -3,7 +3,9 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production' | 'test';
       PORT: string;
-      JWT_SECRET: string;
+      DATABASE_URL: string;
+      JWT_ACCESS_SECRET: string;
+      JWT_REFRESH_SECRET: string;
       REDIS_HOST: string;
       REDIS_PORT: string;
       LOG_LEVEL: string;

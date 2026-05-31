@@ -7,13 +7,9 @@ const health = ( _req: Request, res: Response ): void => {
 };
 
 const dbHealth = async ( _req: Request, res: Response ): Promise<void> => {
-  try {
-    const { text, values } = buildQuery(`SELECTwid, created_at FROM demo_table LIMIT :limit`, { limit: 1 })
+    const { text, values } = buildQuery(`SELECT id, created_at FROM demo_table LIMIT :limit`, { limit: 1 })
     await execute(text, values);
     res.json({ success: true, message: 'DB connection OK' });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'DB connection failed' });
-  }
 };
 
 export default { health, dbHealth };

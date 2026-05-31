@@ -24,6 +24,7 @@ const errorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
+    statusCode,
     ...(env.isDevelopment && { stack: err.stack }),
   });
 };
