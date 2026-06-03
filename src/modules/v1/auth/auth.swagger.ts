@@ -68,4 +68,22 @@ export const authPaths = {
             },
         },
     },
+    "/api/v1/auth/refresh": {
+        post: {
+            tags: ["Auth"],
+            summary: "Refresh token",
+            description: "Refresh Token",
+            requestBody: {
+                content: {
+                    "application/json": {   
+                    },
+                },
+            },
+            responses: {
+                200: {
+                    description: "Refesh successful",
+                },
+            },
+        },
+    },
 };

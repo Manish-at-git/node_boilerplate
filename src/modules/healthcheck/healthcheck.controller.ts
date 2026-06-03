@@ -12,4 +12,10 @@ const dbHealth = async (_req: Request, res: Response): Promise<void> => {
     res.json({ success: true, message: 'DB connection OK' });
 };
 
-export default { health, dbHealth };
+const authTest = async (_req: Request, res: Response): Promise<void> => {
+    const { text, values } = buildQuery(`SELECT id, created_at FROM demo_table LIMIT :limit`, { limit: 1 })
+    await execute(text, values);
+    res.json({ success: true, message: 'DB connection OK' });
+};
+
+export default { health, dbHealth, authTest };

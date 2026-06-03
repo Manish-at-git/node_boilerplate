@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import healthController from './healthcheck.controller';
+import { authMiddleware } from '@/middlewares';
 
 const router = Router();
 
@@ -29,5 +30,18 @@ router.get('/', healthController.health);
  *         description: Database is healthy
  */
 router.get('/db', healthController.dbHealth);
+
+/**
+ * @swagger
+ * /api/health//auth_test:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: Auth test
+ *     responses:
+ *       200:
+ *         description: Auth test success
+ */
+router.get('/auth_test', authMiddleware, healthController.authTest);
 
 export default router;

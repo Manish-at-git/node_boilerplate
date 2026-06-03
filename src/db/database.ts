@@ -1,7 +1,8 @@
-import { QueryResult, QueryResultRow, PoolClient } from "pg";
-
+import { Pool, QueryResult, QueryResultRow, PoolClient } from "pg";
 import pool from "@/db";
+import { logger } from "@/config";
 
+type DbClient = Pool | PoolClient;
 export interface QueryData {
     text: string;
     values: unknown[];
@@ -32,22 +33,19 @@ export const buildQuery = (
 export const query = async <T extends QueryResultRow>(
     sql: string,
     params: unknown[] = [],
+    dbPool: DbClient = pool,
 ): Promise<T[]> => {
-    const start = Date.now();
+    // const start = Date.now();
 
     try {
-        const result = await pool.query<T>(sql, params);
+        const result = await dbPool.query<T>(sql, params);
 
-        const duration = Date.now() - start;
-
-        console.log(`Query executed in ${duration}ms`);
+        // const duration = Date.now() - start;
+        // console.log(`Query executed in ${duration}ms`);
 
         return result.rows;
     } catch (error) {
-        console.error("Database Error");
-        console.error(sql);
-        console.error(params);
-
+        logger.error({ err: error, sql, params }, "Database query failed" );
         throw error;
     }
 };
@@ -55,16 +53,18 @@ export const query = async <T extends QueryResultRow>(
 export const queryOne = async <T extends QueryResultRow>(
     sql: string,
     params: unknown[] = [],
+    dbPool: DbClient = pool,
 ): Promise<T | null> => {
-    const rows = await query<T>(sql, params);
+    const rows = await query<T>(sql, params, dbPool);
 
     return rows[0] ?? null;
 };
 
-export const execute = async (
+export const execute = async <T extends QueryResultRow = QueryResultRow>(
     sql: string,
     params: unknown[] = [],
-): Promise<QueryResult> => pool.query(sql, params);
+    dbPool: DbClient = pool,
+): Promise<QueryResult<T>> => dbPool.query<T>(sql, params);
 
 export const transaction = async <T>(
     callback: (client: PoolClient) => Promise<T>,
@@ -80,7 +80,11 @@ export const transaction = async <T>(
 
         return result;
     } catch (error) {
-        await client.query("ROLLBACK");
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error("Rollback failed", rollbackError);
+        }
 
         throw error;
     } finally {

@@ -1,7 +1,7 @@
 const messages = {
   SUCCESS: 'Success',
   CREATED: 'Created successfully',
-  NOT_FOUND: 'Resource not found',
+  NOT_FOUND: 'Not found',
   UNAUTHORIZED: 'Unauthorized',
   FORBIDDEN: 'Forbidden',
   BAD_REQUEST: 'Bad request',

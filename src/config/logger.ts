@@ -29,16 +29,17 @@ export const requestLogger = (
             path: req.originalUrl,
             statusCode: res.statusCode,
             responseTime: Date.now() - start,
+            ip: req.ip,
         };
 
-        const logLine = `method=${log.method} url=${log.path} status=${log.statusCode} durationMs=${log.responseTime}`;
+        // const logLine = `method=${log.method} url=${log.path} status=${log.statusCode} durationMs=${log.responseTime}`;
 
         if (res.statusCode >= 500) {
-            logger.error(logLine);
+            logger.error(log);
         } else if (res.statusCode >= 400) {
-            logger.warn(logLine);
+            logger.warn(log);
         } else {
-            logger.info(logLine);
+            logger.info(log);
         }
     });
 

@@ -3,6 +3,7 @@ import 'source-map-support/register';
 
 import app from './app';
 import { env, logger, initSentry } from './config';
+import { endPool } from '@/db/database';
 
 // Init Sentry before anything else
 initSentry();
@@ -17,8 +18,9 @@ const server = app.listen(env.PORT, () => {
 const shutdown = (signal: string) => {
   logger.info(`${signal} received — shutting down gracefully`);
 
-  server.close(() => {
+  server.close( async () => {
     logger.info('HTTP server closed');
+    await endPool();
     process.exit(0);
   });
 

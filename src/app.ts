@@ -7,7 +7,7 @@ import { errorHandler, notFound } from "./middlewares";
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
 configureMiddleware(app);
 

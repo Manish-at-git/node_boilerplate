@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 
 import { env } from "@/config";
 import ApiError from "@/utils/ApiError";
@@ -16,11 +16,11 @@ import type {
 
 const generateTokens = (payload: ITokenPayload): IAuthTokens => {
     const accessToken = jwt.sign(payload, env.JWT_ACCESS_SECRET, {
-        expiresIn: "30m",
+        expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions["expiresIn"],
     });
 
-    const refreshToken = jwt.sign(payload, env.JWT_ACCESS_SECRET, {
-        expiresIn: "30d",
+    const refreshToken = jwt.sign(payload, env.JWT_REFRESH_SECRET, {
+        expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions["expiresIn"],
     });
 
     return {
@@ -69,7 +69,25 @@ const login = async (body: ILoginBody): Promise<IAuthTokens> => {
     });
 };
 
+const verifyRefreshToken = ( token: string ): ITokenPayload => {
+    return jwt.verify(
+        token,
+        env.JWT_REFRESH_SECRET,
+    ) as ITokenPayload;
+};
+
+const refresh = ( refreshToken: string ): IAuthTokens => {
+    const payload = verifyRefreshToken(refreshToken);
+
+    return generateTokens({
+        id: payload.id,
+        email: payload.email,
+    });
+};
+
 export default {
     register,
     login,
+    verifyRefreshToken,
+    refresh
 };
