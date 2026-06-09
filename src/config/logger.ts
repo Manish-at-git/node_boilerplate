@@ -25,6 +25,7 @@ export const requestLogger = (
 
     res.on("finish", () => {
         const log = {
+            requestId: req?.requestId,
             method: req.method,
             path: req.originalUrl,
             statusCode: res.statusCode,

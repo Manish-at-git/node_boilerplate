@@ -2,6 +2,8 @@ import { Router } from 'express';
 
 import healthController from './healthcheck.controller';
 import { authMiddleware } from '@/middlewares';
+import authorize from '@/middlewares/authorize.middleware';
+import { misc } from '@/constants';
 
 const router = Router();
 
@@ -33,7 +35,7 @@ router.get('/db', healthController.dbHealth);
 
 /**
  * @swagger
- * /api/health//auth_test:
+ * /api/health/auth_test:
  *   get:
  *     tags:
  *       - Health
@@ -43,5 +45,20 @@ router.get('/db', healthController.dbHealth);
  *         description: Auth test success
  */
 router.get('/auth_test', authMiddleware, healthController.authTest);
+
+
+/**
+ * @swagger
+ * /api/health/authorization_test:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: Authorization test
+ *     responses:
+ *       200:
+ *         description: Authorization test success
+ */
+
+router.get('/authorization_test', authMiddleware, authorize([misc.roles.ADMIN]), healthController.authTest);
 
 export default router;

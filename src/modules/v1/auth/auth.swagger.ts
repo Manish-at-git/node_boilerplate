@@ -86,4 +86,22 @@ export const authPaths = {
             },
         },
     },
+    "/api/v1/auth/logout": {
+        post: {
+            tags: ["Auth"],
+            summary: "Logout",
+            description: "Logout",
+            requestBody: {
+                content: {
+                    "application/json": {   
+                    },
+                },
+            },
+            responses: {
+                200: {
+                    description: "Logout successful",
+                },
+            },
+        },
+    },
 };

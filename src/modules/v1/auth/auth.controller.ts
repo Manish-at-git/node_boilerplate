@@ -19,8 +19,6 @@ const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie( "accessToken", tokens.accessToken, cookieConfig.accessToken );
     res.cookie( "refreshToken", tokens.refreshToken, cookieConfig.refreshToken);
 
-    console.log(res.getHeaders());
-
     ApiResponse.success(res, null, httpStatus.OK, 'Logged in successfully');
 };
 
@@ -36,14 +34,28 @@ const refresh = async (
             "Refresh token missing",
         );
     }
-    const tokens = authService.refresh(refreshToken);
+    const tokens = await authService.refresh(refreshToken);
+    res.cookie( "refreshToken", tokens.refreshToken, cookieConfig.refreshToken);
     res.cookie( "accessToken", tokens.accessToken, cookieConfig.accessToken );
     ApiResponse.success( res, null, httpStatus.OK, "Token refreshed" );
 };
 
 
+const logout = async ( req: Request, res: Response ): Promise<void> => {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (refreshToken) {
+        await authService.logout( refreshToken );
+    }
+
+    res.clearCookie( "refreshToken", cookieConfig.refreshToken );
+
+    ApiResponse.success( res, null, 200, "Logged out successfully" );
+};
+
 export default { 
     register, 
     login, 
-    refresh 
+    refresh,
+    logout
 };

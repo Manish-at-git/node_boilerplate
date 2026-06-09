@@ -1,7 +1,7 @@
 import { buildQuery, queryOne } from "@/db/database";
 
 import * as queries from "./auth.queries";
-import { IUser } from "./auth.types";
+import { CreateRefreshTokenDto, IUser } from "./auth.types";
 
 export const findByEmail = async (email: string): Promise<IUser | null> => {
     const { text, values } = buildQuery(queries.FIND_BY_EMAIL, {
@@ -37,4 +37,33 @@ export const createUser = async (
     }
 
     return user;
+};
+
+
+export const createRefreshToken = async (data: CreateRefreshTokenDto) => {
+    const { text, values } = buildQuery(queries.CREATE_REFRESH_TOKENS, {
+        userId: data.userId,
+        tokenHash: data.tokenHash,
+        expiresAt: data.expiresAt,
+    });
+
+    const refreshToken = await queryOne<IUser>(text, values);
+
+    if (!refreshToken) {
+        throw new Error("Failed to create token");
+    }
+
+    return refreshToken;
+};
+
+export const findRefreshTokenByHash = async ( tokenHash: string ) => {
+    const { text, values } = buildQuery( queries.FIND_REFRESH_TOKEN_BY_HASH, { tokenHash });
+    const result = await queryOne<IUser>(text, values);
+    return result || null;
+};
+
+export const revokeRefreshToken = async ( tokenHash: string ): Promise<void> => {
+    const { text, values } = buildQuery( queries.REVOKE_REFRESH_TOKEN, { tokenHash } );
+
+    await queryOne(text, values);
 };
